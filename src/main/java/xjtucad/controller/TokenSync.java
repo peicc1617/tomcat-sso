@@ -1,11 +1,10 @@
 package xjtucad.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import jdk.nashorn.internal.parser.Token;
 import xjtucad.SSOManager;
 import xjtucad.manager.ITokenManager;
 import xjtucad.model.Result;
 import xjtucad.util.KeyName;
+import xjtucad.util.SSOUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -30,7 +29,7 @@ public class TokenSync extends HttpServlet {
         }else {
             result.state=false;
         }
-        resp.getWriter().write(callback + "(" + JSONObject.toJSONString(result) + ")");
+        resp.getWriter().write(callback + "(" + SSOUtil.result2String(result) + ")");
         resp.getWriter().close();
     }
 }

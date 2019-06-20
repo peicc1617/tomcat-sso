@@ -2,8 +2,8 @@ package xjtucad.controller;
 
 import xjtucad.SSOManager;
 import xjtucad.manager.ITokenManager;
-import xjtucad.util.TokenUtil;
 import xjtucad.util.KeyName;
+import xjtucad.util.SSOUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
@@ -23,6 +23,6 @@ public class Logout extends HttpServlet {
             session.removeAttribute(KeyName.USER);
         }
         //无论是否存在用户信息，都清除一下Cookie中的Token信息
-        TokenUtil.clearToken(req,resp);
+        SSOUtil.clearToken(req,resp);
     }
 }

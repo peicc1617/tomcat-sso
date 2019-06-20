@@ -1,7 +1,4 @@
 package xjtucad.dao;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import xjtucad.model.LoginResult;
 import xjtucad.model.User;
 

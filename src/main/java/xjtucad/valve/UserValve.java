@@ -6,7 +6,7 @@ import org.apache.catalina.valves.ValveBase;
 import xjtucad.SSOManager;
 import xjtucad.manager.ITokenManager;
 import xjtucad.util.KeyName;
-import xjtucad.util.TokenUtil;
+import xjtucad.util.SSOUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -39,7 +39,7 @@ public class UserValve  extends ValveBase {
         }
         if(token==null){
             //如果没有token，那么默认是退出状态
-            TokenUtil.clearToken(httpRequest,httpResponse);
+            SSOUtil.clearToken(httpRequest,httpResponse);
         }else {
             //如果有Token，认为不是退出状态
             session.setAttribute(KeyName.USER,tokenManager.getUserInfo(token));

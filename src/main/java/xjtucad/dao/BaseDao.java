@@ -28,7 +28,7 @@ public class BaseDao {
     static{
         //1、加载驱动
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
