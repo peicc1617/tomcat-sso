@@ -1,5 +1,8 @@
 package xjtucad.model;
 
+/**
+ * 枚举，封装登陆结果
+ */
 public enum LoginResult {
     NO_USERNAME("请输入用户名"),
     NO_PASSWORD("请输入密码"),

@@ -7,10 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * 带有效期的HashMap 简单实现 实现了基本的方法，内部有一个(K,Long)的HashMap
  *
- * @Description: 带有效期map 简单实现 实现了基本的方法
- * @author: qd-ankang
- * @date: 2016-11-24 下午4:08:46
  * @param <K>
  * @param <V>
  */
@@ -28,6 +26,8 @@ public class ExpiryMap<K, V> extends HashMap<K, V>{
     public ExpiryMap(){
         super();
     }
+
+    //1<<4 = 16
     public ExpiryMap(long defaultExpiryTime){
         this(1 << 4, defaultExpiryTime);
     }
@@ -35,6 +35,14 @@ public class ExpiryMap<K, V> extends HashMap<K, V>{
         super(initialCapacity);
         this.EXPIRY = defaultExpiryTime;
     }
+
+    /**
+     * 不传入有效期的put，采用默认的EXPIRY，30min
+     *
+     * @param key
+     * @param value
+     * @return
+     */
     public V put(K key, V value) {
         expiryMap.put(key, System.currentTimeMillis() + EXPIRY);
         return super.put(key, value);
@@ -43,6 +51,8 @@ public class ExpiryMap<K, V> extends HashMap<K, V>{
         return !checkExpiry(key, true) && super.containsKey(key);
     }
     /**
+     * 传入有效期的put
+     *
      * @param key
      * @param value
      * @param expiryTime 键值对有效期 毫秒
@@ -58,12 +68,21 @@ public class ExpiryMap<K, V> extends HashMap<K, V>{
     public boolean isEmpty() {
         return entrySet().size() == 0;
     }
+
+    /**
+     * 检查某个value对应的key是否在expiryMap的有效期内
+     *
+     * @param value 一个HashMap
+     * @return
+     */
     public boolean containsValue(Object value) {
         if (value == null) return Boolean.FALSE;
-        Set<java.util.Map.Entry<K, V>> set = super.entrySet();
-        Iterator<java.util.Map.Entry<K, V>> iterator = set.iterator();
+        Set<Map.Entry<K, V>> set = super.entrySet();
+        Iterator<Map.Entry<K, V>> iterator = set.iterator();
         while (iterator.hasNext()) {
-            java.util.Map.Entry<K, V> entry = iterator.next();
+            Map.Entry<K, V> entry = iterator.next();
+            //K=key
+            //V=HashMap
             if(value.equals(entry.getValue())){
                 if(checkExpiry(entry.getKey(), false)) {
                     iterator.remove();
@@ -73,6 +92,12 @@ public class ExpiryMap<K, V> extends HashMap<K, V>{
         }
         return Boolean.FALSE;
     }
+
+    /**
+     * 获取集合中所有的值，去掉不存在的value
+     *
+     * @return
+     */
     public Collection<V> values() {
 
         Collection<V> values = super.values();
@@ -95,10 +120,9 @@ public class ExpiryMap<K, V> extends HashMap<K, V>{
         return super.get(key);
     }
     /**
-     *
-     * @Description: 是否过期
      * @param key
      * @return null:不存在或key为null -1:过期  存在且没过期返回value 因为过期的不是实时删除，所以稍微有点作用
+     * @Description: 是否过期
      */
     public Object isInvalid(Object key) {
         if (key == null)
@@ -122,23 +146,28 @@ public class ExpiryMap<K, V> extends HashMap<K, V>{
             expiryMap.put(e.getKey(), System.currentTimeMillis() + EXPIRY);
         super.putAll(m);
     }
+
+    /**
+     * @return 过滤掉已过期token的entrySet
+     */
     public Set<Map.Entry<K,V>> entrySet() {
-        Set<java.util.Map.Entry<K, V>> set = super.entrySet();
-        Iterator<java.util.Map.Entry<K, V>> iterator = set.iterator();
+        Set<Map.Entry<K, V>> set = super.entrySet();
+        Iterator<Map.Entry<K, V>> iterator = set.iterator();
         while (iterator.hasNext()) {
-            java.util.Map.Entry<K, V> entry = iterator.next();
+            Map.Entry<K, V> entry = iterator.next();
             if(checkExpiry(entry.getKey(), false)) iterator.remove();
         }
 
         return set;
     }
     /**
+     * 检查有效期
      *
+     * @param isRemoveSuper 为true 则super中也删除
+     * @return
      * @Description: 是否过期
      * @author: qd-ankang
      * @date: 2016-11-24 下午4:05:02
-     * @param isRemoveSuper true super删除
-     * @return
      */
     private boolean checkExpiry(Object key, boolean isRemoveSuper){
 
@@ -150,10 +179,12 @@ public class ExpiryMap<K, V> extends HashMap<K, V>{
         boolean flag = System.currentTimeMillis() > expiryTime;
 
         if(flag){
+            //如果过期，从expiryMap中删除这个有效期
             if(isRemoveSuper)
                 super.remove(key);
             expiryMap.remove(key);
         }else {
+            //没过期，重置有效期（默认的30min）
             expiryMap.put((K)key,System.currentTimeMillis() + EXPIRY);
         }
         return flag;

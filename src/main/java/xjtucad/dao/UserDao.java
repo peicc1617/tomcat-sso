@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ * 继承BaseDao，调用其中的通用SQL查询方法，执行具体SQL
+ */
 public class UserDao extends BaseDao {
 
     /**
@@ -119,6 +122,12 @@ public class UserDao extends BaseDao {
         }
     }
 
+    /**
+     * 从ResultSet中获取Map的键值对
+     * @param rs
+     * @return
+     * @throws SQLException
+     */
     public Map<String,String> getMapFromRs(ResultSet rs) throws SQLException {
         Map<String,String> map = new HashMap<>();
         if(rs.next()){

@@ -1,5 +1,9 @@
 package xjtucad.model;
 
+/**
+ * SSO配置实体类
+ * 包括端口，主机ip，远程主机端口
+ */
 public class SSOConf {
     private int port=6030;
 

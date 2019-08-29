@@ -63,6 +63,10 @@ public class BaseDao {
         }
     }
 
+    /**
+     * 创建默认数据库连接
+     * @return
+     */
     private Connection getConnectionDefault(){
         try {
             return DriverManager.getConnection(url, user, pwd);
@@ -78,12 +82,13 @@ public class BaseDao {
             System.out.println(conn.isValid(100));
             //3、创建命令执行对象
             pstmt = conn.prepareStatement(query);
-            //4、执行
+            //4、给sql语句添加参数
             if(params!=null && params.size()>0){
                 for(int i=0;i<params.size();i++){
                     pstmt.setObject(i+1, params.get(i));
                 }
             }
+            //5、执行
             rs = pstmt.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();

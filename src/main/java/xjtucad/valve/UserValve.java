@@ -38,10 +38,10 @@ public class UserValve  extends ValveBase {
             }
         }
         if(token==null){
-            //如果没有token，那么默认是退出状态
+            //如果没有token，那么默认是退出状态，清空一下
             SSOUtil.clearToken(httpRequest,httpResponse);
         }else {
-            //如果有Token，认为不是退出状态
+            //如果有Token，认为不是退出状态，给session中添加userInfo属性
             session.setAttribute(KeyName.USER,tokenManager.getUserInfo(token));
         }
         getNext().invoke(request, response);

@@ -2,6 +2,9 @@ package xjtucad.model;
 
 import java.io.Serializable;
 
+/**
+ * 用户实体类，对应数据库字段
+ */
 public class User implements Serializable{
     /**
      * 用户ID

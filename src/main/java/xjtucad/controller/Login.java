@@ -17,17 +17,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Login extends HttpServlet {
 
     SSOManager ssoManager = SSOManager.getInstance();
     ITokenManager tokenManager = ssoManager.getTokenManager();
 
+    //获取用户信息
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
         resp.setContentType("application/json        ;charset=UTF-8");
+        //从session中获取useInfo信息
+        //这个属性是在UserValve中设置的，配置在sever.xml中，在filter和servlet之前执行
         Map<String, String> userInfo = (Map<String, String>) req.getSession().getAttribute("userInfo");
         Result result = new Result();
         if (userInfo == null) {
@@ -40,6 +42,7 @@ public class Login extends HttpServlet {
         resp.getWriter().close();
     }
 
+    //登陆
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //设置输出格式
@@ -61,10 +64,12 @@ public class Login extends HttpServlet {
             if (info != LoginResult.SUCCESS) {
                 result.content = info.toString();
             } else {
+                //验证成功
                 Map<String, String> user = userDao.getUser(username, password);
                 if (user == null || user.isEmpty()) {
                     result.content = LoginResult.PASSWORD_ERROR.toString();
                 } else {
+                    //生成token
                     String token = MD5.md5(username + System.currentTimeMillis());
                     tokenManager.storeUserInfo(user, token);
                     result.state = true;
@@ -72,13 +77,13 @@ public class Login extends HttpServlet {
                     //新建cookie并设置cookie的过期时间
                     resp.addCookie(packCookie(KeyName.TOKEN, token, 1000 * 60 * 60 * 24, "/"));
                     //这里使用URLEncoder.encode进行编码主要是为了在cookie中保存中文，
-                    resp.addCookie(packCookie(KeyName.COOKIE_USER_INFO, URLEncoder.encode(SSOUtil.userMap2JSONString(user), "utf-8"), 1000 * 60 * 60 * 24, "/"))
-                    ;
+                    resp.addCookie(packCookie(KeyName.COOKIE_USER_INFO, URLEncoder.encode(SSOUtil.userMap2JSONString(user), "utf-8"), 1000 * 60 * 60 * 24, "/"));
                     req.getSession().setAttribute(KeyName.TOKEN, token);
                 }
             }
         }
         if (result.state) {
+            System.out.println("登陆成功");
             resp.sendRedirect(serviceURL);
         } else {
             resp.sendRedirect("/webresources/userLogin.jsp?serviceURL=" + serviceURL + "&error=" + URLEncoder.encode(result.content, "utf-8"));

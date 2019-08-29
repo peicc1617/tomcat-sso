@@ -2,6 +2,9 @@ package xjtucad.util;
 
 import java.security.MessageDigest;
 
+/**
+ * 字符串加密类，将用户名+当前系统时间的字符串进行MD5加密
+ */
 public class MD5 {
     private static final String encryModel="MD5";
 

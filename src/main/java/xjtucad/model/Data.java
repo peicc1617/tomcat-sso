@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 实体类
+ * method，userInfo，token
+ */
 public class Data implements Serializable {
 
     /**

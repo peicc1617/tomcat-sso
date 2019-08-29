@@ -33,6 +33,7 @@ public class SSOManager {
         Context ctx = null;
         boolean is = false;
         try {
+            //尝试建立服务端TokenManager
             initCtx = new InitialContext();
             ctx = (Context) initCtx.lookup("java:comp/env");
             serverConf = (SSOConf)ctx.lookup("sso/server");  //项目名要与context.xml里面的对应
@@ -42,6 +43,7 @@ public class SSOManager {
         } catch (NamingException e) {
             System.out.println("没有找到Server配置");
             try {
+                //尝试建立客户端TokenManager
                 initCtx = new InitialContext();
                 ctx = (Context) initCtx.lookup("java:comp/env");
                 clientConf = (SSOConf)ctx.lookup("sso/client");
@@ -56,6 +58,7 @@ public class SSOManager {
             }
         }
         if(!is){
+            //建立标准的TokenManager
             System.out.println("进入单机模式");
             tokenManager = new StandTokenManger();
             mode = STAND_MODE;

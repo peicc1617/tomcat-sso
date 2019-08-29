@@ -7,13 +7,11 @@ import xjtucad.util.NIOHelp;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class ClientTokenManager  extends StandTokenManger{
 
@@ -91,7 +89,7 @@ public class ClientTokenManager  extends StandTokenManger{
 //将NIO通道选绑定到择器,当然绑定后分配的主键为skey
                 channel.register(sel, SelectionKey.OP_CONNECT);
                 while (true) {
-                    Set<SelectionKey> keySet = null;
+                    Set<SelectionKey> keySet;
                     try {
 //                    获取通道内是否有选择器的关心事件
                         sel.select();
