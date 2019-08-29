@@ -21,10 +21,11 @@ public class SSOManager {
     ITokenManager tokenManager = null;
     static SSOManager ssoManager = new SSOManager();
     private String ssoLoginUrl = "";
-
+    //单例模式 公有实例获取方法
     public static SSOManager getInstance(){
         return ssoManager;
     }
+    //单例模式 私有构造方法
     private SSOManager() {
         SSOConf serverConf = null;
         SSOConf clientConf = null;
